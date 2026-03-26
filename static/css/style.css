@@ -1,0 +1,42 @@
+/* 针对不同屏幕尺寸的精细化调整 */
+@media (max-width: 768px) {
+    /* 平板及以下设备 */
+    .btn-container {
+        flex-direction: column;
+        gap: 1rem !important;
+    }
+
+    #yesBtn, #noBtn {
+        width: 80% !important;
+        margin: 0 auto !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* 手机设备 */
+    .dog-image {
+        width: 120px !important;
+        height: 120px !important;
+    }
+
+    h1 {
+        font-size: 1.5rem !important;
+    }
+
+    #yesBtn, #noBtn {
+        width: 90% !important;
+        padding: 0.8rem 1rem !important;
+        font-size: 1rem !important;
+    }
+
+    .modal-content {
+        width: 90% !important;
+        padding: 1.5rem !important;
+    }
+}
+
+/* 防止小屏幕下按钮溢出视口 */
+#noBtn {
+    max-width: 80vw;
+    box-sizing: border-box;
+}

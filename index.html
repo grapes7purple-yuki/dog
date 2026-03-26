@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>❤️小狗</title>
+    <link rel="icon" href="labubu.jpg" type="image/jpeg">
+    <!-- 引入外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B8B',
+                        secondary: '#6B9FFF',
+                    },
+                    fontFamily: {
+                        cute: ['"Comic Sans MS"', '"Marker Felt"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 自定义工具类和样式 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            .btn-hover {
+                transition: all 0.3s ease;
+            }
+        }
+    </style>
+
+    <style>
+        /* 最高优先级的手机端按钮样式 */
+        @media screen and (max-width: 480px) {
+            #yesBtn, #noBtn {
+                width: 50px !important;
+                height: 50px !important;
+                padding: 0 !important;
+                font-size: 10px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 2px !important;
+            }
+
+            #yesBtn i, #noBtn i {
+                font-size: 12px !important;
+            }
+
+            .dog-image {
+                width: 100px !important;
+                height: 100px !important;
+            }
+
+            h1 {
+                font-size: 1.2rem !important;
+                margin-bottom: 1rem !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-100 to-blue-100 min-h-screen flex flexflex-col items-center justify-center p-4">
+    <div id="mainContainer" class="text-center max-w-md mx-auto w-full">
+        <!-- 小狗图片 -->
+        <div class="mb-6 animate-bounce">
+            <img src="/static/imgs/one.gif"
+                 alt="可爱小狗"
+                 class="dog-image w-36 h-36 md:w-64 md:h-64 mx-auto rounded                   rounded-full shadow shadow-xl object-cover border-4 border-primary">
+        </div>
+
+        <!-- 表白文字 -->
+        <h1 class="text-[clamp(1.2rem,5vw,3rem)] font-cute font-bold text-primary
+                   mb-6 text-shadow animate-pulse whitespace-nowrap">
+            你愿意成为我的小狗嘛？
+        </h1>
+
+        <!-- 按钮容器 -->
+        <div class="btn-container flex justify-center gap-4 my-6 relative">
+            <!-- 愿意按钮 -->
+            <button id="yesBtn" class="bg-primary hover:bg-primary/90 text-white font-cute
+                                      text-xl px-6 py-3 rounded-full shadow shadow-lg
+                                      btn-hover hover:scale-105 transition-all">
+                <i class="fa fa-heart"></i>
+                <span>愿意</span>
+            </button>
+
+            <!-- 不愿意按钮 -->
+            <button id="noBtn" class="bg-secondary hover:bg-secondary/90 text-white font-cute
+                                      text-xl px-6 py-3 rounded-full shadow shadow-lg
+                                      btn-hover hover:scale-105 transition-all">
+                <i class="fa fa-times"></i>
+                <span>不愿意</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 成功弹窗 -->
+    <div id="successModal" class="fixed inset-0 bg-black/50 flex items-center justify-center
+                                 z-50 hidden p-4">
+        <div class="modal-content bg-white rounded-2xl p-6 max-w-md w-full text-center
+                   transform transition-all">
+            <h2 class="text-2xl font-cute font-bold text-primary mb-3">太棒啦！</h2>
+            <p class="text-lg mb-4">我会好好照顾你的~ ❤️</p>
+            <img src="/static/imgs/two.gif"
+                 alt="开心的小狗" class="w-28 h-28 mx-auto mb-4 rounded-full">
+            <button class="bg-primary text-white px-5 py-2 rounded-full font-cute">
+                嗯呢~
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 按钮元素
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const successModal = document.getElementById('successModal');
+        const modalContent = successModal.querySelector('.modal-content');
+
+        // 标记是否为移动设备
+        let isMobile = window.innerWidth <= 480;
+        let lastPosition = null;
+        let containerRect;
+
+        // 初始化
+        window.addEventListener('load', () => {
+            containerRect = document.getElementById('mainContainer').getBoundingClientRect();
+            isMobile = window.innerWidth <= 480;
+        });
+
+        // 愿意按钮点击事件
+        yesBtn.addEventListener('click', () => {
+            successModal.classList.remove('hidden');
+            modalContent.classList.add('animate-in');
+        });
+
+        // 不愿意按钮交互
+        noBtn.addEventListener('mouseover', moveAway);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveAway();
+        }, { passive: false });
+
+        // 核心移动函数
+        function moveAway() {
+            if (!containerRect) {
+                containerRect = document.getElementById('mainContainer').getBoundingClientRect();
+            }
+
+            // 按钮尺寸
+            const btnW = noBtn.offsetWidth;
+            const btnH = noBtn.offsetHeight;
+
+            // 容器中心
+            const centerX = containerRect.left + containerRect.width / 2;
+            const centerY = containerRect.top + containerRect.height / 2;
+
+            // 移动参数（手机端更激进）
+            const config = isMobile ? {
+                range: 3.5,    // 活动范围倍数
+                minDist: 40,   // 最小移动距离
+                speed: 0.1     // 移动速度
+            } : {
+                range: 1.8,
+                minDist: 50,
+                speed: 0.18
+            };
+
+            // 计算最大半径
+            const maxRadius = Math.min(
+                containerRect.width / 2 - btnW/2 - 10,
+                containerRect.height / 2 - btnH/2 - 10
+            ) * config.range;
+
+            let newX, newY;
+            let attempts = 0;
+            let valid = false;
+
+            // 寻找有效位置
+            while (!valid && attempts < 50) {
+                attempts++;
+                // 随机角度和距离
+                const angle = Math.random() * Math.PI * 2;
+                const distance = config.minDist + Math.random() * (maxRadius - config.minDist);
+
+                // 计算新位置
+                newX = centerX + Math.cos(angle) * distance - btnW / 2;
+                newY = centerY + Math.sin(angle) * distance - btnH / 2;
+
+                // 边界检查
+                newX = Math.max(containerRect.left + 10,
+                               Math.min(newX, containerRect.right - btnW - 10));
+                newY = Math.max(containerRect.top + 10,
+                               Math.min(newY, containerRect.bottom - btnH - 10));
+
+                // 与上一位置距离检查
+                if (lastPosition) {
+                    const dist = Math.hypot(newX - lastPosition.x, newY - lastPosition.y);
+                    if (dist < config.minDist) continue;
+                }
+
+                // 与"愿意"按钮距离检查
+                const yesRect = yesBtn.getBoundingClientRect();
+                if (newX < yesRect.right + 10 && newX + btnW > yesRect.left - 10 &&
+                    newY < yesRect.bottom + 10 && newY + btnH > yesRect.top - 10) {
+                    continue;
+                }
+
+                valid = true;
+            }
+
+            // 更新位置
+            lastPosition = {x: newX, y: newY};
+            noBtn.style.cssText = `
+                position: fixed;
+                left: ${newX}px;
+                top: ${newY}px;
+                z-index: 10;
+                transition: all ${config.speed}s cubic-bezier(0.25, 0.1, 0.25, 1);
+            `;
+        }
+
+        // 窗口大小变化时重新计算
+        window.addEventListener('resize', () => {
+            const newMobileState = window.innerWidth <= 480;
+            if (newMobileState !== isMobile) {
+                isMobile = newMobileState;
+                containerRect = document.getElementById('mainContainer').getBoundingClientRect();
+                if (noBtn.style.position === 'fixed') {
+                    moveAway();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
